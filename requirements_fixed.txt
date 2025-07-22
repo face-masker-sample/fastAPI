@@ -1,0 +1,7 @@
+opencv-python
+ultralytics
+huggingface_hub
+numpy
+Pillow
+torch
+torchvision 
