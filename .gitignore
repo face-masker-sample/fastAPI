@@ -1,0 +1,27 @@
+# 보안 설정 파일들
+cctv_config.py
+*.env
+.env
+
+# Python 캐시
+__pycache__/
+*.pyc
+*.pyo
+
+# 테스트 결과 파일들
+test_*.log
+*.mp4
+screenshots/
+
+# AI 모델 캐시
+.cache/
+models/
+weights/
+
+# IDE 설정
+.vscode/
+.idea/
+
+# 시스템 파일
+.DS_Store
+Thumbs.db 
