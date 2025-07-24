@@ -1,0 +1,29 @@
+# FaceMaker 프로젝트 필수 패키지
+# pip install -r requirements_facemaker.txt
+
+# 딥러닝 프레임워크
+torch>=2.0.0
+torchvision>=0.15.0
+torchaudio>=2.0.0
+
+# AI/ML 라이브러리
+transformers>=4.36.0
+accelerate
+datasets
+
+# 컴퓨터 비전
+ultralytics
+huggingface-hub
+supervision
+opencv-python
+
+# 오디오 처리
+librosa
+soundfile
+
+# 이미지 처리
+Pillow
+
+# 기본 라이브러리
+numpy
+argparse 

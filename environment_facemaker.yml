@@ -1,0 +1,41 @@
+name: facemaker
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.10
+  - pip
+  - ffmpeg
+  
+  # PyTorch (CPU 버전 - 호환성 우선)
+  - pytorch::pytorch
+  - pytorch::torchvision
+  - pytorch::torchaudio
+  - pytorch::cpuonly
+  
+  # 오디오 처리
+  - librosa
+  - soundfile
+  
+  # 기본 라이브러리
+  - numpy
+  - opencv
+  - pillow
+  
+  # pip으로 설치할 패키지들
+  - pip:
+    # AI/ML 라이브러리
+    - transformers>=4.36.0
+    - accelerate
+    - datasets
+    
+    # 컴퓨터 비전
+    - ultralytics
+    - huggingface-hub
+    - supervision
+    
+    # 유틸리티
+    - argparse
+    - pathlib
+    - tempfile 
