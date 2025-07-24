@@ -318,21 +318,44 @@ class VideoFaceMasking:
             pil_image = Image.fromarray(frame_rgb)
             draw = ImageDraw.Draw(pil_image)
             
-            # 텍스트 내용
-            text = f"인원: {person_count}명"
+            # 텍스트 내용 분리
+            prefix_text = "인원: "
+            count_text = f"{person_count}명"
             
             # 텍스트 위치 (좌측 상단)
             text_position = (20, 20)
             
-            # 텍스트 배경을 위한 반투명 박스
-            if self.font:
-                # 텍스트 크기 계산
-                bbox = draw.textbbox(text_position, text, font=self.font)
-                text_width = bbox[2] - bbox[0]
-                text_height = bbox[3] - bbox[1]
+            # 폰트 로드 (굵은 폰트)
+            bold_font = self.font
+            try:
+                if self.font and platform.system() == "Windows":
+                    # Windows에서 굵은 폰트 시도
+                    font_paths = [
+                        "C:/Windows/Fonts/malgunbd.ttf",  # 맑은 고딕 Bold
+                        "C:/Windows/Fonts/malgun.ttf",    # 맑은 고딕 Regular
+                    ]
+                    for font_path in font_paths:
+                        if os.path.exists(font_path):
+                            bold_font = ImageFont.truetype(font_path, 30)
+                            break
+            except:
+                pass
+            
+            # 텍스트 크기 계산
+            if bold_font:
+                # "인원: " 부분 크기
+                prefix_bbox = draw.textbbox(text_position, prefix_text, font=bold_font)
+                prefix_width = prefix_bbox[2] - prefix_bbox[0]
+                
+                # 전체 텍스트 크기
+                full_text = prefix_text + count_text
+                full_bbox = draw.textbbox(text_position, full_text, font=bold_font)
+                text_width = full_bbox[2] - full_bbox[0]
+                text_height = full_bbox[3] - full_bbox[1]
             else:
                 # 폰트가 없을 경우 대략적인 크기
-                text_width = len(text) * 15
+                prefix_width = len(prefix_text) * 15
+                text_width = len(prefix_text + count_text) * 15
                 text_height = 25
             
             # 배경 박스 그리기 (반투명 검은색)
@@ -352,12 +375,19 @@ class VideoFaceMasking:
             pil_image = Image.alpha_composite(pil_image.convert('RGBA'), overlay).convert('RGB')
             draw = ImageDraw.Draw(pil_image)
             
-            # 텍스트 그리기 (흰색)
-            if self.font:
-                draw.text(text_position, text, font=self.font, fill=(255, 255, 255))
+            # 텍스트 그리기 (색상 분리 - 모두 굵은 폰트)
+            if bold_font:
+                # "인원: " 부분 - 흰색, 굵은 폰트
+                draw.text(text_position, prefix_text, font=bold_font, fill=(255, 255, 255))
+                
+                # "3명" 부분 - 빨간색, 굵은 폰트, 위치 조정
+                count_position = (text_position[0] + prefix_width, text_position[1])
+                draw.text(count_position, count_text, font=bold_font, fill=(255, 0, 0))  # 빨간색
             else:
                 # 폰트가 없을 경우 기본 폰트 (영어/숫자만 표시)
-                draw.text(text_position, f"Count: {person_count}", fill=(255, 255, 255))
+                draw.text(text_position, f"Count: ", fill=(255, 255, 255))
+                count_pos = (text_position[0] + 80, text_position[1])
+                draw.text(count_pos, f"{person_count}", fill=(255, 0, 0))
             
             # PIL Image를 다시 OpenCV 프레임으로 변환
             frame_with_text = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
